@@ -157,6 +157,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="sample2.cpp" />
     <ClCompile Include="ShootingProject.cpp" />
     <ClCompile Include="sample.cpp" />
   </ItemGroup>

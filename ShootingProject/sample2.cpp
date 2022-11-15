@@ -13,9 +13,13 @@
 //		return -1; // エラーが起きたら直ちに終了
 //	}
 //
-//	DrawPixel(320, 240, 0xffff); // 点を打つ
-//	DrawPixel(340, 240, 0xffff); // 点を打つ
-//	DrawPixel(360, 240, 0xffff); // 点を打つ
+//	int gh;
+//
+//	LoadGraphScreen(0, 0, "Picture/star.png", TRUE);
+//
+//	gh = LoadGraph("Picture/star.png");
+//
+//	DrawGraph(300, 0, gh, TRUE);
 //
 //	WaitKey(); // キー入力待ち
 //

@@ -1,180 +1,196 @@
-﻿// ShootingProject.cpp : アプリケーションのエントリ ポイントを定義します。
-//
+﻿#include "DxLib.h"
+#include <cmath>
 
-#include "framework.h"
-#include "ShootingProject.h"
+#define PI  3.1415926535897932384626433832795f
 
-#define MAX_LOADSTRING 100
 
-// グローバル変数:
-HINSTANCE hInst;                                // 現在のインターフェイス
-WCHAR szTitle[MAX_LOADSTRING];                  // タイトル バーのテキスト
-WCHAR szWindowClass[MAX_LOADSTRING];            // メイン ウィンドウ クラス名
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 
-// このコード モジュールに含まれる関数の宣言を転送します:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
-LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
 {
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: ここにコードを挿入してください。
+	ChangeWindowMode(TRUE);
 
-    // グローバル文字列を初期化する
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_SHOOTINGPROJECT, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+	if (DxLib_Init() == -1) // ＤＸライブラリ初期化処理
 
-    // アプリケーション初期化の実行:
-    if (!InitInstance (hInstance, nCmdShow))
-    {
-        return FALSE;
-    }
+	{
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SHOOTINGPROJECT));
+		return -1; // エラーが起きたら直ちに終了
+	}
 
-    MSG msg;
+	int gh[12];
+	char key[256];
+	int x = 300, y = 360, y_prev = 0, y_temp = 0;
 
-    // メイン メッセージ ループ:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
+	LoadDivGraph("Picture/charall.png", 12, 3, 4, 49, 66, gh);
 
-    return (int) msg.wParam;
-}
+	int sh;
+	sh = LoadSoundMem("SE/Bomb.mp3");
+
+	float move = 1.0f;
+
+	int dx = 0;
+	int dy = 0;
+
+	int xcount = 0, ycount = 0;
+	int ix = 0, iy = 0, result = 0;
+
+	bool jflag = false;
 
 
 
-//
-//  関数: MyRegisterClass()
-//
-//  目的: ウィンドウ クラスを登録します。
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-    WNDCLASSEXW wcex;
 
-    wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHOOTINGPROJECT));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SHOOTINGPROJECT);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	SetDrawScreen(DX_SCREEN_BACK);
 
-    return RegisterClassExW(&wcex);
-}
+	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0)
+	{
 
-//
-//   関数: InitInstance(HINSTANCE, int)
-//
-//   目的: インスタンス ハンドルを保存して、メイン ウィンドウを作成します
-//
-//   コメント:
-//
-//        この関数で、グローバル変数でインスタンス ハンドルを保存し、
-//        メイン プログラム ウィンドウを作成および表示します。
-//
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   hInst = hInstance; // グローバル変数にインスタンス ハンドルを格納する
+		if (key[KEY_INPUT_LEFT] == 1 || key[KEY_INPUT_RIGHT] == 1) {
+			if (key[KEY_INPUT_UP] == 1 || key[KEY_INPUT_DOWN] == 1) {
+				move = 1 / std::sqrt(2.0);
+			}
+			else {
+				move = 1.0f;
+			}
+		}
+		else if (key[KEY_INPUT_UP] == 1 || key[KEY_INPUT_DOWN] == 1) {
+			move = 1.0f;
+		}
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+		if (key[KEY_INPUT_LEFT] == 1) {
+			//DrawString(300, 240, "←キーが押されています", 0xffff);
+			x -= (int)4 * move;
+		}
+		if (key[KEY_INPUT_RIGHT] == 1) {
+			//DrawString(300, 240, "↑キーが押されています", 0xffff);
+			x += (int)4 * move;
+		}
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+		//画面移動制御
+		if (x + (49 / 2) > 640)
+			x = 640 - (49 / 2);
+		if (x < (49 / 2))
+			x = (49 / 2);
 
-   return TRUE;
-}
 
-//
-//  関数: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  目的: メイン ウィンドウのメッセージを処理します。
-//
-//  WM_COMMAND  - アプリケーション メニューの処理
-//  WM_PAINT    - メイン ウィンドウを描画する
-//  WM_DESTROY  - 中止メッセージを表示して戻る
-//
-//
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // 選択されたメニューの解析:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: HDC を使用する描画コードをここに追加してください...
-            EndPaint(hWnd, &ps);
-        }
-        break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-    return 0;
-}
+		if (jflag == true) {
+			y_temp = y;
+			y += (y - y_prev) + 1;
+			y_prev = y_temp;
+			if (y == 360)
+				jflag = false;
+		}
 
-// バージョン情報ボックスのメッセージ ハンドラーです。
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
+		if (key[KEY_INPUT_SPACE] == 1 && jflag == false) {
+			jflag = true;
+			y_prev = y;
+			y = y - 20;
+		}
 
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
+		//if (key[KEY_INPUT_UP] == 1) {
+		//	//DrawString(300, 240, "→キーが押されています", 0xffff);
+		//	y -= (int)4 * move;
+		//}
+		//if (key[KEY_INPUT_DOWN] == 1) {
+		//	//DrawString(300, 240, "↓キーが押されています", 0xffff);
+		//	y += (int)4 * move;
+		//}
+
+			//左キーが押されてて、かつxcountが０以上なら０にしてから１引く。
+			//それ以外は１引く
+		if (key[KEY_INPUT_LEFT] == 1) {
+			if (xcount > 0)
+				xcount = 0;
+			--xcount;
+		}
+		//右キーが押されてて、かつxcountが０以下なら０にしてから１足す。
+		//それ以外は１引く
+		if (key[KEY_INPUT_RIGHT] == 1) {
+			if (xcount < 0)
+				xcount = 0;
+			++xcount;
+		}
+		//上キーが押されてて、かつycountが０以上なら０にしてから１引く。
+		//それ以外は１引く
+		if (key[KEY_INPUT_UP] == 1) {
+			if (ycount > 0)
+				ycount = 0;
+			--ycount;
+		}
+		//下キーが押されてて、かつycountが０以下なら０にしてから１足す。
+		//それ以外は１足す
+		if (key[KEY_INPUT_DOWN] == 1) {
+			if (ycount < 0)
+				ycount = 0;
+			++ycount;
+		}
+
+		//カウント数から添字を求める。
+		ix = abs(xcount) % 30 / 10;
+		iy = abs(ycount) % 30 / 10;
+		//xカウントがプラスなら右向きなので2行目の先頭添字番号を足す。
+		if (xcount > 0) {
+			ix += 3;
+			result = ix;
+		}
+		else if (xcount < 0) {
+			//マイナスなら左向きなので、4行目の先頭添字番号を足す。
+			ix += 9;
+			result = ix;
+		}
+
+		//yカウントがプラスなら下向きなので、3行目の先頭添字番号を足す。
+		if (ycount > 0) {
+			iy += 6;
+			result = iy;
+		}
+		else if (ycount < 0) {
+			//１行目の先頭添字番号は０なので何もする必要なし。(分かりやすくするために書いときました)
+			iy += 0;
+			result = iy;
+		}
+
+		//斜め移動の場合は横顔を優先
+		if (move == (1 / std::sqrt(2.0)))
+			result = ix;
+
+		//描画
+		DrawGraph(x, y, gh[result], TRUE);
+
+
+		//押されてなければカウントをゼロにする。
+		if (key[KEY_INPUT_LEFT] != 1 && key[KEY_INPUT_RIGHT] != 1) {
+			xcount = 0;
+		}
+		if (key[KEY_INPUT_UP] != 1 && key[KEY_INPUT_DOWN] != 1) {
+			ycount = 0;
+		}
+
+
+		if (key[KEY_INPUT_ESCAPE] == 1) {
+			break;
+		}
+		if (key[KEY_INPUT_RETURN] == 1) {
+			if (CheckSoundMem(sh) == 0)
+				PlaySoundMem(sh, DX_PLAYTYPE_BACK, TRUE);
+		}
+		if (key[KEY_INPUT_SPACE] == 1) {
+			StopSoundMem(sh);
+		}
+
+
+		//x += 2;
+		//if (x == 640)
+		//	break;
+
+	}
+
+	//WaitKey();
+	DeleteSoundMem(sh);
+
+
+	DxLib_End(); // ＤＸライブラリ使用の終了処理
+
+	return 0; // ソフトの終了
 }
