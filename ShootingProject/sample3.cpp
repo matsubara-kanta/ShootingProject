@@ -1,4 +1,4 @@
-ï»¿#include "DxLib.h"
+#include "DxLib.h"
 #include <cmath>
 
 #define PI  3.1415926535897932384626433832795f
@@ -10,11 +10,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ChangeWindowMode(TRUE);
 
-	if (DxLib_Init() == -1) // ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªåˆæœŸåŒ–å‡¦ç†
+	if (DxLib_Init() == -1) // ‚c‚wƒ‰ƒCƒuƒ‰ƒŠ‰Šú‰»ˆ—
 
 	{
 
-		return -1; // ã‚¨ãƒ©ãƒ¼ãŒèµ·ããŸã‚‰ç›´ã¡ã«çµ‚äº†
+		return -1; // ƒGƒ‰[‚ª‹N‚«‚½‚ç’¼‚¿‚ÉI—¹
 	}
 
 	int gh[12];
@@ -59,15 +59,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		if (key[KEY_INPUT_LEFT] == 1) {
-			//DrawString(300, 240, "â†ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã¾ã™", 0xffff);
+			//DrawString(300, 240, "©ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚Ü‚·", 0xffff);
 			x -= (int)4 * move;
 		}
 		if (key[KEY_INPUT_RIGHT] == 1) {
-			//DrawString(300, 240, "â†‘ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã¾ã™", 0xffff);
+			//DrawString(300, 240, "ªƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚Ü‚·", 0xffff);
 			x += (int)4 * move;
 		}
 
-		//ç”»é¢ç§»å‹•åˆ¶å¾¡
+		//‰æ–ÊˆÚ“®§Œä
 		if (x + (49 / 2) > 640)
 			x = 640 - (49 / 2);
 		if (x < (49 / 2))
@@ -89,77 +89,77 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		//if (key[KEY_INPUT_UP] == 1) {
-		//	//DrawString(300, 240, "â†’ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã¾ã™", 0xffff);
+		//	//DrawString(300, 240, "¨ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚Ü‚·", 0xffff);
 		//	y -= (int)4 * move;
 		//}
 		//if (key[KEY_INPUT_DOWN] == 1) {
-		//	//DrawString(300, 240, "â†“ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã¾ã™", 0xffff);
+		//	//DrawString(300, 240, "«ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚Ü‚·", 0xffff);
 		//	y += (int)4 * move;
 		//}
 
-			//å·¦ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã¦ã€ã‹ã¤xcountãŒï¼ä»¥ä¸Šãªã‚‰ï¼ã«ã—ã¦ã‹ã‚‰ï¼‘å¼•ãã€‚
-			//ãã‚Œä»¥å¤–ã¯ï¼‘å¼•ã
+			//¶ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚ÄA‚©‚Âxcount‚ª‚OˆÈã‚È‚ç‚O‚É‚µ‚Ä‚©‚ç‚Pˆø‚­B
+			//‚»‚êˆÈŠO‚Í‚Pˆø‚­
 		if (key[KEY_INPUT_LEFT] == 1) {
 			if (xcount > 0)
 				xcount = 0;
 			--xcount;
 		}
-		//å³ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã¦ã€ã‹ã¤xcountãŒï¼ä»¥ä¸‹ãªã‚‰ï¼ã«ã—ã¦ã‹ã‚‰ï¼‘è¶³ã™ã€‚
-		//ãã‚Œä»¥å¤–ã¯ï¼‘å¼•ã
+		//‰EƒL[‚ª‰Ÿ‚³‚ê‚Ä‚ÄA‚©‚Âxcount‚ª‚OˆÈ‰º‚È‚ç‚O‚É‚µ‚Ä‚©‚ç‚P‘«‚·B
+		//‚»‚êˆÈŠO‚Í‚Pˆø‚­
 		if (key[KEY_INPUT_RIGHT] == 1) {
 			if (xcount < 0)
 				xcount = 0;
 			++xcount;
 		}
-		//ä¸Šã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã¦ã€ã‹ã¤ycountãŒï¼ä»¥ä¸Šãªã‚‰ï¼ã«ã—ã¦ã‹ã‚‰ï¼‘å¼•ãã€‚
-		//ãã‚Œä»¥å¤–ã¯ï¼‘å¼•ã
+		//ãƒL[‚ª‰Ÿ‚³‚ê‚Ä‚ÄA‚©‚Âycount‚ª‚OˆÈã‚È‚ç‚O‚É‚µ‚Ä‚©‚ç‚Pˆø‚­B
+		//‚»‚êˆÈŠO‚Í‚Pˆø‚­
 		if (key[KEY_INPUT_UP] == 1) {
 			if (ycount > 0)
 				ycount = 0;
 			--ycount;
 		}
-		//ä¸‹ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã¦ã€ã‹ã¤ycountãŒï¼ä»¥ä¸‹ãªã‚‰ï¼ã«ã—ã¦ã‹ã‚‰ï¼‘è¶³ã™ã€‚
-		//ãã‚Œä»¥å¤–ã¯ï¼‘è¶³ã™
+		//‰ºƒL[‚ª‰Ÿ‚³‚ê‚Ä‚ÄA‚©‚Âycount‚ª‚OˆÈ‰º‚È‚ç‚O‚É‚µ‚Ä‚©‚ç‚P‘«‚·B
+		//‚»‚êˆÈŠO‚Í‚P‘«‚·
 		if (key[KEY_INPUT_DOWN] == 1) {
 			if (ycount < 0)
 				ycount = 0;
 			++ycount;
 		}
 
-		//ã‚«ã‚¦ãƒ³ãƒˆæ•°ã‹ã‚‰æ·»å­—ã‚’æ±‚ã‚ã‚‹ã€‚
+		//ƒJƒEƒ“ƒg”‚©‚ç“Yš‚ğ‹‚ß‚éB
 		ix = abs(xcount) % 30 / 10;
 		iy = abs(ycount) % 30 / 10;
-		//xã‚«ã‚¦ãƒ³ãƒˆãŒãƒ—ãƒ©ã‚¹ãªã‚‰å³å‘ããªã®ã§2è¡Œç›®ã®å…ˆé ­æ·»å­—ç•ªå·ã‚’è¶³ã™ã€‚
+		//xƒJƒEƒ“ƒg‚ªƒvƒ‰ƒX‚È‚ç‰EŒü‚«‚È‚Ì‚Å2s–Ú‚Ìæ“ª“Yš”Ô†‚ğ‘«‚·B
 		if (xcount > 0) {
 			ix += 3;
 			result = ix;
 		}
 		else if (xcount < 0) {
-			//ãƒã‚¤ãƒŠã‚¹ãªã‚‰å·¦å‘ããªã®ã§ã€4è¡Œç›®ã®å…ˆé ­æ·»å­—ç•ªå·ã‚’è¶³ã™ã€‚
+			//ƒ}ƒCƒiƒX‚È‚ç¶Œü‚«‚È‚Ì‚ÅA4s–Ú‚Ìæ“ª“Yš”Ô†‚ğ‘«‚·B
 			ix += 9;
 			result = ix;
 		}
 
-		//yã‚«ã‚¦ãƒ³ãƒˆãŒãƒ—ãƒ©ã‚¹ãªã‚‰ä¸‹å‘ããªã®ã§ã€3è¡Œç›®ã®å…ˆé ­æ·»å­—ç•ªå·ã‚’è¶³ã™ã€‚
+		//yƒJƒEƒ“ƒg‚ªƒvƒ‰ƒX‚È‚ç‰ºŒü‚«‚È‚Ì‚ÅA3s–Ú‚Ìæ“ª“Yš”Ô†‚ğ‘«‚·B
 		if (ycount > 0) {
 			iy += 6;
 			result = iy;
 		}
 		else if (ycount < 0) {
-			//ï¼‘è¡Œç›®ã®å…ˆé ­æ·»å­—ç•ªå·ã¯ï¼ãªã®ã§ä½•ã‚‚ã™ã‚‹å¿…è¦ãªã—ã€‚(åˆ†ã‹ã‚Šã‚„ã™ãã™ã‚‹ãŸã‚ã«æ›¸ã„ã¨ãã¾ã—ãŸ)
+			//‚Ps–Ú‚Ìæ“ª“Yš”Ô†‚Í‚O‚È‚Ì‚Å‰½‚à‚·‚é•K—v‚È‚µB(•ª‚©‚è‚â‚·‚­‚·‚é‚½‚ß‚É‘‚¢‚Æ‚«‚Ü‚µ‚½)
 			iy += 0;
 			result = iy;
 		}
 
-		//æ–œã‚ç§»å‹•ã®å ´åˆã¯æ¨ªé¡”ã‚’å„ªå…ˆ
+		//Î‚ßˆÚ“®‚Ìê‡‚Í‰¡Šç‚ğ—Dæ
 		if (move == (1 / std::sqrt(2.0)))
 			result = ix;
 
-		//æç”»
+		//•`‰æ
 		DrawGraph(x, y, gh[result], TRUE);
 
 
-		//æŠ¼ã•ã‚Œã¦ãªã‘ã‚Œã°ã‚«ã‚¦ãƒ³ãƒˆã‚’ã‚¼ãƒ­ã«ã™ã‚‹ã€‚
+		//‰Ÿ‚³‚ê‚Ä‚È‚¯‚ê‚ÎƒJƒEƒ“ƒg‚ğƒ[ƒ‚É‚·‚éB
 		if (key[KEY_INPUT_LEFT] != 1 && key[KEY_INPUT_RIGHT] != 1) {
 			xcount = 0;
 		}
@@ -190,7 +190,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DeleteSoundMem(sh);
 
 
-	DxLib_End(); // ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªä½¿ç”¨ã®çµ‚äº†å‡¦ç†
+	DxLib_End(); // ‚c‚wƒ‰ƒCƒuƒ‰ƒŠg—p‚ÌI—¹ˆ—
 
-	return 0; // ã‚½ãƒ•ãƒˆã®çµ‚äº†
+	return 0; // ƒ\ƒtƒg‚ÌI—¹
 }
