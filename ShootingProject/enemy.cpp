@@ -63,6 +63,7 @@ ENEMY::ENEMY(int type, int stype, int m_pattern, int s_pattern, int in_time, int
 		shot[i].speed = speed;
 		shot[i].x = x;
 		shot[i].y = y;
+		shot[i].flag = false;
 	}
 
 
@@ -380,14 +381,38 @@ void ENEMY::GetPosition(double* x, double* y)
 
 }
 
+bool ENEMY::GetShotPosition(int index, double* x, double* y)
+{
+	if (shot[index].flag) {
+		*x = shot[index].x;
+		*y = shot[index].y;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void ENEMY::SetShotFlag(int index, bool flag)
+{
+	shot[index].flag = flag;
+}
+
+int ENEMY::GetShotType()
+{
+	return stype;
+}
+
+
+
 void ENEMY::SetDeadFlag()
 {
-		deadflag = true;
+	deadflag = true;
 }
 
 bool ENEMY::GetDeadFlag()
 {
-		return deadflag;
+	return deadflag;
 }
 
 
@@ -395,6 +420,17 @@ bool ENEMY::GetShotSound()
 {
 	return s_shot;
 }
+
+void ENEMY::SetGrazeFlag(int index)
+{
+	shot[index].gflag = true;
+}
+
+bool ENEMY::GetGrazeFlag(int index)
+{
+	return shot[index].gflag;
+}
+
 
 
 

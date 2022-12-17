@@ -18,13 +18,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 
-	CONTROL* control = new CONTROL();
+	CONTROL &control = CONTROL::GetInstance();
 
 
 
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0) {
 
-		control->All();
+		control.All();
 		Sleep(10);
 
 	}

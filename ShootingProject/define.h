@@ -2,28 +2,37 @@
 #include <windows.h>
 
 //プレイヤーの歩くスピード
-#define PLAYER_SPEED 4
+#define PLAYER_SPEED 2
 // 余白
 #define MARGIN 10
 // 背景のスクロールスピード
-#define SCROLL_SPEED 2
+#define SCROLL_SPEED 1
 // 弾の最大数
 #define PSHOT_NUM 20
 #define PSHOT_SPEED 14
 #define ENEMY_SNUM 50
-#define ENEMY_NUM 5
-#define PI 3.1415926535897932384626433832795f
+#define ENEMY_NUM 22
+#define PI 3.14
 
 //当たり判定用半径定義
-#define PLAYER_COLLISION 6
+#define PLAYER_COLLISION 2
 #define ENEMY1_COLLISION 14
 
 #define PSHOT_COLLISION 3
-#define ESHOT1_COLLISION 12
-#define ESHOT2_COLLISION 3
-#define ESHOT3_COLLISION 2
+#define ESHOT0_COLLISION 6
+#define ESHOT1_COLLISION 3
+#define ESHOT2_COLLISION 2
 
+#define PLAYER_INITX 200
+#define PLAYER_INITY 420
 
+#define EFFECT_EDEADNUM 20
+#define EFFECT_PDEADNUM 20
+
+#define GRAZE_COLLISION 10
+#define GRAZE_NUM 50
+
+#define PLAYER_LIFE 5
 
 struct SHOT {
 	bool flag; // 弾が発射中かどうか
@@ -42,6 +51,7 @@ struct E_SHOT {
 	int width, height;
 	int pattern;
 	int speed;
+	bool gflag;//グレイズ判定用フラグ
 };
 
 struct ENEMYDATA {
@@ -59,6 +69,13 @@ struct ENEMYDATA {
 	int hp;//HP
 	int item;//アイテム
 };
+
+struct PEFFECT_EXPAND {
+		double x, y;
+		double rad;
+		int speed;
+};
+
 
 
 //メッセージボックス

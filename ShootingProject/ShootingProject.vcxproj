@@ -151,7 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="effect_edead.h" />
+    <ClInclude Include="effect_pdead.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="graze.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="control.h" />
     <ClInclude Include="define.h" />
@@ -159,6 +162,9 @@
     <ClInclude Include="back.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="effect_edead.cpp" />
+    <ClCompile Include="effect_pdead.cpp" />
+    <ClCompile Include="graze.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="control.cpp" />
     <ClCompile Include="player.cpp" />

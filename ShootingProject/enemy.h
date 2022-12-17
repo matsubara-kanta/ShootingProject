@@ -39,4 +39,9 @@ public:
 	bool GetShotSound();
 	void SetDeadFlag();
 	bool GetDeadFlag();
+	bool GetShotPosition(int index, double* x, double* y);
+	void SetShotFlag(int index, bool flag);
+	int GetShotType();
+	void SetGrazeFlag(int index);
+	bool GetGrazeFlag(int index);
 };

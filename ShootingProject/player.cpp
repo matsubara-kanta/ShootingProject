@@ -22,10 +22,13 @@ PLAYER::PLAYER()
 	xcount = 0, ycount = 0;
 	ix = 0, iy = 0, result = 0;
 
-	x = 180;
-	y = 400;
+	x = PLAYER_INITX;
+	y = PLAYER_INITY;
 
-	life = true;
+	life = PLAYER_LIFE;
+	damageflag = false;
+	endflag = false;
+	dcount = 0;
 
 	memset(shot, 0, sizeof(shot));
 
@@ -41,6 +44,7 @@ PLAYER::PLAYER()
 	}
 
 	count = 0;
+	s_shot = false;
 
 
 }
@@ -159,9 +163,34 @@ void PLAYER::Draw()
 		}
 	}
 
-	if (life) {
+	//生きてれば描画
+	if (damageflag) {
+		if (dcount > 20) {
+			if (dcount % 2 == 0) {
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 140);
+				DrawGraph(PLAYER_INITX - width / 2, PLAYER_INITY - height / 2 + 60 - (dcount - 20), gh[1], TRUE);
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			}
+			else {
+				DrawGraph(PLAYER_INITX - width / 2, PLAYER_INITY - height / 2 + 60 - (dcount - 20), gh[1], TRUE);
+			}
+		}
+		++dcount;
+		if (dcount == 80) {
+			damageflag = false;
+			dcount = 0;
+			//座標を初期値に戻す
+			x = PLAYER_INITX;
+			y = PLAYER_INITY;
+			//上向きの画像にする
+			result = 1;
+		}
+	}
+	else {
+		//通常描画
 		DrawGraph(x - width / 2, y - height / 2, gh[result], TRUE);
 	}
+
 }
 
 void PLAYER::Shot() {
@@ -222,15 +251,35 @@ bool PLAYER::GetShotPosition(int index, double* x, double* y)
 
 void PLAYER::SetShotFlag(int index, bool flag)
 {
-		shot[index].flag = flag;
+	shot[index].flag = flag;
 }
+
+void PLAYER::SetDamageFlag()
+{
+	damageflag = true;
+	//消滅エフェクトのフラグを立てる
+	effect_pdead.SetFlag(x, y);
+
+}
+
+bool PLAYER::GetDamageFlag()
+{
+	return damageflag;
+}
+
 
 
 
 void PLAYER::All()
 {
-	Move();
+	//消滅してないときだけ実行
+	if (!damageflag) {
+		Move();
+	}
+
 	Shot();
+	effect_pdead.All();
+
 	Draw();
 
 	++count;
