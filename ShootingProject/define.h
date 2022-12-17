@@ -12,6 +12,17 @@
 #define PSHOT_SPEED 14
 #define ENEMY_SNUM 50
 #define ENEMY_NUM 5
+#define PI 3.1415926535897932384626433832795f
+
+//当たり判定用半径定義
+#define PLAYER_COLLISION 6
+#define ENEMY1_COLLISION 14
+
+#define PSHOT_COLLISION 3
+#define ESHOT1_COLLISION 12
+#define ESHOT2_COLLISION 3
+#define ESHOT3_COLLISION 2
+
 
 
 struct SHOT {
@@ -26,6 +37,7 @@ struct E_SHOT {
 	bool flag; // 弾が発射中かどうか
 	double x;
 	double y;
+	double rad;
 	int gh;
 	int width, height;
 	int pattern;
@@ -33,19 +45,19 @@ struct E_SHOT {
 };
 
 struct ENEMYDATA {
-		int type;//敵種類
-		int stype;//弾種類
-		int m_pattern;//移動パターン
-		int s_pattern;//発射パターン
-		int in_time;//出現時間
-		int stop_time;//停止時間
-		int shot_time;//弾発射時間
-		int out_time;//帰還時間
-		int x;//x座標
-		int y;//y座標
-		int speed;//弾スピード
-		int hp;//HP
-		int item;//アイテム
+	int type;//敵種類
+	int stype;//弾種類
+	int m_pattern;//移動パターン
+	int s_pattern;//発射パターン
+	int in_time;//出現時間
+	int stop_time;//停止時間
+	int shot_time;//弾発射時間
+	int out_time;//帰還時間
+	int x;//x座標
+	int y;//y座標
+	int speed;//弾スピード
+	int hp;//HP
+	int item;//アイテム
 };
 
 

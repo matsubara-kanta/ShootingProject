@@ -11,21 +11,32 @@ private:
 	int stype;
 	int m_pattern;
 	int s_pattern;
-	int count;
-	bool deadflag;
-	bool endflag;
-	bool sflag;
-	E_SHOT shot[ENEMY_SNUM];
-	int scount;
 	int hp;
 	int item;
+	int count;
+	int num;
+	double rad;
+	bool deadflag;
+	bool endflag;
+	E_SHOT shot[ENEMY_SNUM];
+	bool sflag;
+	int scount;
+	bool s_shot;
+
+private:
+	void Move();
+	void Shot();
+	void Draw();
+	bool OutCheck();
+	bool ShotOutCheck(int i);
 
 
 
 public:
 	bool All();
-	void Move();
-	void Shot();
-	void Draw();
+	void GetPosition(double* x, double* y);
 	ENEMY(int type, int stype, int m_pattern, int s_pattern, int in_time, int stop_time, int shot_time, int out_time, int x, int y, int speed, int hp, int item);
+	bool GetShotSound();
+	void SetDeadFlag();
+	bool GetDeadFlag();
 };
