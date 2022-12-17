@@ -21,35 +21,35 @@ ENEMY::ENEMY(int type, int stype, int m_pattern, int s_pattern, int in_time, int
 	this->shot_time = shot_time;
 	this->out_time = out_time;
 
-		//hpとアイテム代入
-		this->hp = hp;
-		this->item = item;
+	//hpとアイテム代入
+	this->hp = hp;
+	this->item = item;
 
-		//敵画像読み込み
-		if (type == 0) {
-				LoadDivGraph("Picture/enemy.png", 3, 1, 3, 27, 25, gh);
-		}
+	//敵画像読み込み
+	if (type == 0) {
+		LoadDivGraph("Picture/enemy.png", 3, 1, 3, 27, 25, gh);
+	}
 
 
-		int temp =-1;
-			//弾画像読み込み
-			if (stype == 0) {
-					temp = LoadGraph("Picture/enemyshot1.png");
-			}
+	int temp = -1;
+	//弾画像読み込み
+	if (stype == 0) {
+		temp = LoadGraph("Picture/enemyshot1.png");
+	}
 
 	int w, h;
 	GetGraphSize(temp, &w, &h);
 
-		for (int i = 0; i < ENEMY_SNUM; ++i) {
-				shot[i].flag = false;
-				shot[i].gh = temp;
-				shot[i].width = w;
-				shot[i].height = h;
-				shot[i].pattern = s_pattern;
-				shot[i].speed = speed;
-				shot[i].x = x;
-				shot[i].y = y;
-		}
+	for (int i = 0; i < ENEMY_SNUM; ++i) {
+		shot[i].flag = false;
+		shot[i].gh = temp;
+		shot[i].width = w;
+		shot[i].height = h;
+		shot[i].pattern = s_pattern;
+		shot[i].speed = speed;
+		shot[i].x = x;
+		shot[i].y = y;
+	}
 
 
 	count = 0;
@@ -76,11 +76,11 @@ void ENEMY::Move() {
 void ENEMY::Draw() {
 	int temp;
 
-		for (int i = 0; i < ENEMY_SNUM; ++i) {
-				if (shot[i].flag) {
-						DrawGraph(shot[i].x, shot[i].y, shot[i].gh, true);
-				}
+	for (int i = 0; i < ENEMY_SNUM; ++i) {
+		if (shot[i].flag) {
+			DrawGraph(shot[i].x, shot[i].y, shot[i].gh, true);
 		}
+	}
 
 
 	if (!deadflag) {
@@ -99,16 +99,16 @@ void ENEMY::Shot() {
 	}
 
 	if (sflag) {
-		switch (sflag) {
+		switch (s_pattern) {
 		case 0:
 			if (scount % 10 == 0 && scount <= 40) {
 				for (int i = 0; i < ENEMY_SNUM; ++i) {
-						if (shot[i].flag == false) {
-								shot[i].flag = true;
-								shot[i].x = x;
-								shot[i].y = y;
-								break;
-						}
+					if (shot[i].flag == false) {
+						shot[i].flag = true;
+						shot[i].x = x;
+						shot[i].y = y;
+						break;
+					}
 
 				}
 			}
@@ -116,26 +116,26 @@ void ENEMY::Shot() {
 		}
 		int s = 0;
 
-			for (int i = 0; i < ENEMY_SNUM; ++i) {
-					if (shot[i].flag) {
-							shot[i].y += shot[i].speed;
+		for (int i = 0; i < ENEMY_SNUM; ++i) {
+			if (shot[i].flag) {
+				shot[i].y += shot[i].speed;
 
-							//弾が画面をはみ出たらフラグを戻す。
-							if (shot[i].x < -20 || shot[i].x>420 || shot[i].y < -20 || shot[i].y>500) {
-									shot[i].flag = false;
-									continue;
-							}
-							++s;
-					}
+				//弾が画面をはみ出たらフラグを戻す。
+				if (shot[i].x < -20 || shot[i].x>420 || shot[i].y < -20 || shot[i].y>500) {
+					shot[i].flag = false;
+					continue;
+				}
+				++s;
 			}
-			//sがゼロということは発射中の弾がない。
-			//かつdeadflagがTRUEということはこの敵のクラスは消滅させてもよい
-			if (s == 0 && deadflag) {
-					//敵クラス消滅フラグをTRUEにする
-					endflag = true;
-			}
+		}
+		//sがゼロということは発射中の弾がない。
+		//かつdeadflagがTRUEということはこの敵のクラスは消滅させてもよい
+		if (s == 0 && deadflag) {
+			//敵クラス消滅フラグをTRUEにする
+			endflag = true;
+		}
 
-			++scount;
+		++scount;
 
 	}
 }
