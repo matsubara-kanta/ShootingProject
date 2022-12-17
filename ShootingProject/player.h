@@ -52,7 +52,7 @@ public:
 	void GetPosition(double* x, double* y);
 	void SetDamageFlag();
 	bool GetDamageFlag();
-
+	int GetLife();
 	void All();
 
 };

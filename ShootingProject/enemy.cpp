@@ -76,6 +76,8 @@ ENEMY::ENEMY(int type, int stype, int m_pattern, int s_pattern, int in_time, int
 	endflag = false;
 	sflag = false;
 
+	s_shot = false;
+
 }
 
 void ENEMY::Move() {
@@ -429,6 +431,11 @@ void ENEMY::SetGrazeFlag(int index)
 bool ENEMY::GetGrazeFlag(int index)
 {
 	return shot[index].gflag;
+}
+
+int ENEMY::GetItem()
+{
+	return item;
 }
 
 

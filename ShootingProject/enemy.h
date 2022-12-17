@@ -42,6 +42,7 @@ public:
 	bool GetShotPosition(int index, double* x, double* y);
 	void SetShotFlag(int index, bool flag);
 	int GetShotType();
+	int  GetItem();
 	void SetGrazeFlag(int index);
 	bool GetGrazeFlag(int index);
 };

@@ -257,6 +257,7 @@ void PLAYER::SetShotFlag(int index, bool flag)
 void PLAYER::SetDamageFlag()
 {
 	damageflag = true;
+	--life;
 	//消滅エフェクトのフラグを立てる
 	effect_pdead.SetFlag(x, y);
 
@@ -265,6 +266,11 @@ void PLAYER::SetDamageFlag()
 bool PLAYER::GetDamageFlag()
 {
 	return damageflag;
+}
+
+int PLAYER::GetLife()
+{
+	return life;
 }
 
 

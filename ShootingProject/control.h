@@ -5,6 +5,8 @@
 #include "enemy.h"
 #include "effect_edead.h"
 #include"graze.h"
+#include "score.h"
+#include "item.h"
 
 
 #include <time.h>
@@ -25,6 +27,10 @@ class CONTROL {
 	//グレイズクラス
 	GRAZE* graze[GRAZE_NUM];
 
+	SCORE* score;
+
+	ITEM* item[ITEM_NUM];
+
 
 	//サウンドハンドル
 	int s_eshot;
@@ -32,6 +38,7 @@ class CONTROL {
 	int s_edead;
 	int s_pdead;
 	int s_graze;
+	int s_item;
 
 	//サウンドを鳴らすかどうかのフラグ
 	bool eshot_flag;
@@ -39,8 +46,9 @@ class CONTROL {
 	bool edead_flag;
 	bool pdead_flag;
 	bool graze_flag;
+	bool item_flag;
 
-	clock_t start = clock();
+	
 
 
 private:
@@ -48,6 +56,7 @@ private:
 	void CollisionAll();
 	bool CircleCollision(double c1, double c2, double cx1, double cx2, double cy1, double cy2);
 	void EnemyDeadEffect(double x, double y);
+	void Enemy_Init();
 
 public:
 	CONTROL();

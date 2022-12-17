@@ -2,16 +2,16 @@
 #include <windows.h>
 
 //プレイヤーの歩くスピード
-#define PLAYER_SPEED 2
+#define PLAYER_SPEED 4
 // 余白
 #define MARGIN 10
 // 背景のスクロールスピード
-#define SCROLL_SPEED 1
+#define SCROLL_SPEED 2
 // 弾の最大数
-#define PSHOT_NUM 20
+#define PSHOT_NUM 50
 #define PSHOT_SPEED 14
 #define ENEMY_SNUM 50
-#define ENEMY_NUM 22
+#define ENEMY_NUM 50
 #define PI 3.14
 
 //当たり判定用半径定義
@@ -33,6 +33,16 @@
 #define GRAZE_NUM 50
 
 #define PLAYER_LIFE 5
+
+//スコアの文字描画の基準となるX座標
+#define SCORE_X 390
+
+//アイテムの当たり判定用半径
+#define ITEM_COLLISION 16
+//アイテムの総数
+#define ITEM_NUM 30
+
+#define PLAYER_PINIT 10
 
 struct SHOT {
 	bool flag; // 弾が発射中かどうか

@@ -2,6 +2,8 @@
 #include "control.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 CONTROL::CONTROL()
 {
@@ -19,69 +21,77 @@ CONTROL::CONTROL()
 		graze[i] = new GRAZE;
 	}
 
-
-	FILE* fp;
-	ENEMYDATA data[ENEMY_NUM];
-	char buf[100];
-	int c;
-	int col = 1;
-	int row = 0;
-
-	memset(buf, 0, sizeof(buf));
-	fp = fopen("enemydata.csv", "r");
-
-	if (!fp) {
-		perror("fopen");
+	for (int i = 0; i < ITEM_NUM; ++i) {
+		item[i] = new ITEM;
 	}
 
-	while (fgetc(fp) != '\n');
-
-	while (1) {
-
-		while (1) {
-
-			c = fgetc(fp);
-
-			if (c == EOF)
-				goto out;
-
-			if (c != ',' && c != '\n')
-				strcat(buf, (const char*)&c);
-			else
-				break;
-		}
+	score = new SCORE;
 
 
-		switch (col) {
-		case 1: data[row].type = atoi(buf); break;
-		case 2: data[row].stype = atoi(buf); break;
-		case 3: data[row].m_pattern = atoi(buf); break;
-		case 4: data[row].s_pattern = atoi(buf); break;
-		case 5: data[row].in_time = atoi(buf); break;
-		case 6: data[row].stop_time = atoi(buf); break;
-		case 7: data[row].shot_time = atoi(buf); break;
-		case 8: data[row].out_time = atoi(buf); break;
-		case 9: data[row].x = atoi(buf); break;
-		case 10: data[row].y = atoi(buf); break;
-		case 11: data[row].speed = atoi(buf); break;
-		case 12: data[row].hp = atoi(buf); break;
-		case 13: data[row].item = atoi(buf); break;
-		}
-		memset(buf, 0, sizeof(buf));
-		++col;
+	//	FILE* fp;
+	//	ENEMYDATA data[ENEMY_NUM];
+	//	char buf[100];
+	//	int c;
+	//	int col = 1;
+	//	int row = 0;
+	//
+	//	memset(buf, 0, sizeof(buf));
+	//	fp = fopen("enemydata.csv", "r");
+	//
+	//	if (!fp) {
+	//		perror("fopen");
+	//	}
+	//
+	//	while (fgetc(fp) != '\n');
+	//
+	//	while (1) {
+	//
+	//		while (1) {
+	//
+	//			c = fgetc(fp);
+	//
+	//			if (c == EOF)
+	//				goto out;
+	//
+	//			if (c != ',' && c != '\n')
+	//				strcat(buf, (const char*)&c);
+	//			else
+	//				break;
+	//		}
+	//
+	//
+	//		switch (col) {
+	//		case 1: data[row].type = atoi(buf); break;
+	//		case 2: data[row].stype = atoi(buf); break;
+	//		case 3: data[row].m_pattern = atoi(buf); break;
+	//		case 4: data[row].s_pattern = atoi(buf); break;
+	//		case 5: data[row].in_time = atoi(buf); break;
+	//		case 6: data[row].stop_time = atoi(buf); break;
+	//		case 7: data[row].shot_time = atoi(buf); break;
+	//		case 8: data[row].out_time = atoi(buf); break;
+	//		case 9: data[row].x = atoi(buf); break;
+	//		case 10: data[row].y = atoi(buf); break;
+	//		case 11: data[row].speed = atoi(buf); break;
+	//		case 12: data[row].hp = atoi(buf); break;
+	//		case 13: data[row].item = atoi(buf); break;
+	//		}
+	//		memset(buf, 0, sizeof(buf));
+	//		++col;
+	//
+	//		if (c == '\n') {
+	//			col = 1;
+	//			++row;
+	//		}
+	//	}
+	//
+	//out:
+	//
+	//	for (int i = 0; i < ENEMY_NUM; ++i) {
+	//		enemy[i] = new ENEMY(data[i].type, data[i].stype, data[i].m_pattern, data[i].s_pattern, data[i].in_time, data[i].stop_time, data[i].shot_time,
+	//			data[i].out_time, data[i].x, data[i].y, data[i].speed, data[i].hp, data[i].item);
+	//	}
 
-		if (c == '\n') {
-			col = 1;
-			++row;
-		}
-	}
-
-out:
-
-	for (int i = 0; i < ENEMY_NUM; ++i) {
-		enemy[i] = new ENEMY(data[i].type, data[i].stype, data[i].m_pattern, data[i].s_pattern, data[i].in_time, data[i].stop_time, data[i].shot_time,
-			data[i].out_time, data[i].x, data[i].y, data[i].speed, data[i].hp, data[i].item);
-	}
+	Enemy_Init();
 
 	//サウンドファイル読み込み
 	s_eshot = LoadSoundMem("SE/enemyshot.mp3");
@@ -89,12 +99,14 @@ out:
 	s_edead = LoadSoundMem("SE/edead.mp3");
 	s_pdead = LoadSoundMem("SE/pdead.mp3");
 	s_graze = LoadSoundMem("SE/graze.mp3");
+	s_item = LoadSoundMem("SE/itemget1.mp3");
 
 	eshot_flag = false;
 	pshot_flag = false;
 	edead_flag = false;
 	pdead_flag = false;
 	graze_flag = false;
+	item_flag = false;
 
 }
 
@@ -126,7 +138,7 @@ void CONTROL::GetEnemyPosition(int index, double* x, double* y)
 
 void CONTROL::All()
 {
-	eshot_flag = pshot_flag = edead_flag = pdead_flag = graze_flag = false;
+	eshot_flag = pshot_flag = edead_flag = pdead_flag = graze_flag = item_flag = false;
 
 	SetDrawArea(MARGIN, MARGIN, MARGIN + 380, MARGIN + 460);
 
@@ -148,6 +160,7 @@ void CONTROL::All()
 			if (enemy[i]->All()) {
 				delete enemy[i];
 				enemy[i] = NULL;
+				score->SetScore(TOTAL_E_NUM, 1);
 			}
 		}
 	}
@@ -167,6 +180,20 @@ void CONTROL::All()
 		}
 	}
 
+	//アイテム描画
+	for (int i = 0; i < ITEM_NUM; ++i) {
+		if (item[i]->GetFlag()) {
+			item[i]->All();
+		}
+	}
+
+
+
+	SetDrawArea(0, 0, 640, 480);
+
+	score->All();
+
+
 
 	SoundAll();
 
@@ -181,10 +208,7 @@ void CONTROL::SoundAll()
 	}
 
 	if (eshot_flag) {
-		clock_t end = clock();
-		if (200 < end - start)
-			PlaySoundMem(s_eshot, DX_PLAYTYPE_BACK);
-		start = end;
+		PlaySoundMem(s_eshot, DX_PLAYTYPE_BACK);
 	}
 
 	if (edead_flag) {
@@ -196,6 +220,10 @@ void CONTROL::SoundAll()
 	}
 	if (graze_flag) {
 		PlaySoundMem(s_graze, DX_PLAYTYPE_BACK);
+	}
+
+	if (item_flag) {
+		PlaySoundMem(s_item, DX_PLAYTYPE_BACK);
 	}
 
 
@@ -240,6 +268,18 @@ void CONTROL::CollisionAll()
 						edead_flag = true;
 						//敵消滅エフェクトセット
 						EnemyDeadEffect(ex, ey);
+						//得点を加える
+						score->SetScore(CURRENT_SCORE, 100);
+						score->SetScore(CURRENT_E_NUM, 1);
+						//アイテム出現
+						for (int z = 0; z < ITEM_NUM; ++z) {
+							int type = enemy[s]->GetItem();
+							if (!item[z]->GetFlag() && 0 <= type && type < 2) {
+								item[z]->SetFlag(ex, ey, enemy[s]->GetItem());
+								break;
+							}
+						}
+
 					}
 				}
 			}
@@ -301,11 +341,14 @@ void CONTROL::CollisionAll()
 									break;
 								}
 							}
+							//グレイズの得点を加える
+							score->SetScore(GRAZE_SCORE, 1);
+							score->SetScore(CURRENT_SCORE, 20);
+
 							//グレイズ音セット
 							graze_flag = true;
 							gtempflag = false;
 						}
-
 
 						if (tempflag) {
 							//操作キャラのdamageflagを立てる
@@ -321,7 +364,31 @@ void CONTROL::CollisionAll()
 				}
 			}
 		}
+		double ix, iy;
+
+		//アイテムとプレイヤーの当たり判定
+		for (int i = 0; i < ITEM_NUM; ++i) {
+			if (item[i]->GetFlag()) {
+				item[i]->GetPosition(&ix, &iy);
+				if (CircleCollision(PLAYER_COLLISION, ITEM_COLLISION, px, ix, py, iy)) {
+					switch (item[i]->GetType()) {
+					case 0:
+						score->SetScore(CURRENT_SCORE, 300);
+						break;
+					case 1:
+						score->SetScore(POWER_SCORE, 1);
+						break;
+					}
+					item[i]->Delete();
+					//アイテム取得音をセット
+					item_flag = true;
+				}
+			}
+		}
+
 	}
+	//ライフは毎回取得
+	score->SetScore(LIFE_SCORE, player->GetLife());
 
 }
 
@@ -358,4 +425,38 @@ CONTROL::~CONTROL()
 		delete graze[i];
 	}
 
+	delete score;
+
+	for (int i = 0; i < ITEM_NUM; ++i) {
+		delete item[i];
+	}
+}
+
+void CONTROL::Enemy_Init() {
+	srand(time(NULL));
+
+	for (int i = 0; i < ENEMY_NUM; i++) {
+		int num = rand();
+		// 複数出現
+		if (i % 3 == 2) {
+			int e_num = num % 5;
+			if (e_num < 2)
+				e_num = 2;
+			int count = 1;
+
+			for (int j = i; j < e_num + i; j++) {
+				if (j > ENEMY_NUM)
+					break;
+				enemy[j] = new ENEMY(num % 1, num % 3, num % 4, num % 4, (i + 1) * 60, (i + 1) * 60 + 62, (i + 1) * 60 + 61,
+					(i + 1) * 60 + 141, 60 * count, -40, 6, 1, (num + j) % 2);
+				count++;
+			}
+			i += e_num - 1;
+		}
+		// 単体出現
+		else {
+			enemy[i] = new ENEMY(num % 1, num % 3, num % 4, num % 4, (i + 1) * 60, (i + 1) * 60 + 60, (i + 1) * 60 + 61,
+				(i + 1) * 60 + 141, 200, -40, 6, 1, num % 2);
+		}
+	}
 }

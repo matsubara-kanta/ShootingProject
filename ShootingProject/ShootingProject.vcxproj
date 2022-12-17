@@ -155,22 +155,26 @@
     <ClInclude Include="effect_pdead.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="graze.h" />
+    <ClInclude Include="item.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="control.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="back.h" />
+    <ClInclude Include="score.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="effect_edead.cpp" />
     <ClCompile Include="effect_pdead.cpp" />
     <ClCompile Include="graze.cpp" />
+    <ClCompile Include="item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="control.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="back.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ShootingProject.rc" />
