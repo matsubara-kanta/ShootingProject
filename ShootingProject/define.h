@@ -42,7 +42,7 @@
 //アイテムの総数
 #define ITEM_NUM 30
 
-#define PLAYER_PINIT 10
+#define PLAYER_PINIT 0
 
 struct SHOT {
 	bool flag; // 弾が発射中かどうか
@@ -50,6 +50,8 @@ struct SHOT {
 	double y;
 	int gh;
 	int width, height;
+	double rad;//角度
+
 };
 
 struct E_SHOT {
@@ -85,6 +87,9 @@ struct PEFFECT_EXPAND {
 		double rad;
 		int speed;
 };
+
+
+
 
 
 

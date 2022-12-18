@@ -46,7 +46,7 @@ void SCORE::SetScore(SCOREDATA data, int val)
 		break;
 
 	case POWER_SCORE:
-		power += val;
+		power = val;
 		break;
 
 	case CURRENT_E_NUM:
@@ -110,7 +110,7 @@ void SCORE::Draw()
 	DrawStringToHandle(SCORE_X, 172, "LIFE", white, font);
 	DrawStringToHandle(SCORE_X, 205, "POWER", white, font);
 	DrawStringToHandle(SCORE_X, 235, "CURRENT", white, font);
-	DrawStringToHandle(SCORE_X, 265, "TOTAL", white, font);
+	DrawStringToHandle(SCORE_X, 265, "ALL", white, font);
 
 	//ハイスコア描画
 	num = sprintf(buf, "%d", high_score);

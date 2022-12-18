@@ -1,8 +1,8 @@
-#include <span>
-
 #include "pch.h"
 #include "player.h"
 #include "control.h"
+
+#include <math.h>
 
 
 PLAYER::PLAYER()
@@ -45,6 +45,7 @@ PLAYER::PLAYER()
 
 	count = 0;
 	s_shot = false;
+	power = PLAYER_PINIT;
 
 
 }
@@ -95,7 +96,6 @@ void PLAYER::Move()
 	else if (y < height / 2 + MARGIN) {
 		y = height / 2 + MARGIN;
 	}
-	//< / span>
 
 
 	if (key[KEY_INPUT_LEFT] == 1) {
@@ -157,11 +157,13 @@ void PLAYER::Move()
 
 void PLAYER::Draw()
 {
+	//弾描画
 	for (int i = 0; i < PSHOT_NUM; ++i) {
 		if (shot[i].flag) {
-			DrawGraph(shot[i].x - shot[i].width / 2, shot[i].y - shot[i].height / 2, shot[i].gh, TRUE);
+			DrawRotaGraph(shot[i].x, shot[i].y, 1.0, shot[i].rad + (90 * PI / 180), shot[i].gh, TRUE);
 		}
 	}
+
 
 	//生きてれば描画
 	if (damageflag) {
@@ -193,36 +195,77 @@ void PLAYER::Draw()
 
 }
 
-void PLAYER::Shot() {
-
+void PLAYER::Shot()
+{
 	s_shot = false;
+	int num = 0;
 
-	if (key[KEY_INPUT_SPACE] == 1 && count % 6 == 0) {
-		for (int i = 0; i < PSHOT_NUM; ++i) {
-			if (shot[i].flag == false) {
-				shot[i].flag = true;
-				shot[i].x = x;
-				shot[i].y = y;
-				break;
+	if (!damageflag) {
+
+		//キーが押されててかつ、6ループに一回発射
+		if (key[KEY_INPUT_SPACE] == 1 && count % 6 == 0) {
+			for (int i = 0; i < PSHOT_NUM; ++i) {
+				if (shot[i].flag == false) {
+					if (power < 5) {
+						shot[i].flag = true;
+						shot[i].x = x;
+						shot[i].y = y;
+						shot[i].rad = -PI / 2;
+						break;
+
+					}
+					else if (power >= 5) {
+						//0の時が前方発射
+						if (num == 0) {
+							shot[i].flag = true;
+							shot[i].x = x;
+							shot[i].y = y;
+							shot[i].rad = -1.57;
+						}
+						else if (num == 1) {
+							shot[i].flag = true;
+							shot[i].x = x;
+							shot[i].y = y;
+							shot[i].rad = -1.69;
+						}
+						else if (num == 2) {
+							shot[i].flag = true;
+							shot[i].x = x;
+							shot[i].y = y;
+							shot[i].rad = -1.45;
+						}
+
+						++num;
+
+
+						if (num == 3) {
+							break;
+						}
+					}
+				}
+
 			}
+			//ショットサウンドフラグを立てる
+			s_shot = true;
 		}
-		//ショットサウンドフラグを立てる
-		s_shot = true;
-
 	}
 
+	//弾を移動させる処理
 	for (int i = 0; i < PSHOT_NUM; ++i) {
+		//発射してる弾だけ
 		if (shot[i].flag) {
-			shot[i].y -= PSHOT_SPEED;
+			shot[i].x += cos(shot[i].rad) * PSHOT_SPEED;
+			shot[i].y += sin(shot[i].rad) * PSHOT_SPEED;
 
-			if (shot[i].y < -10) {
+			//画面の外にはみ出したらフラグを戻す
+			if (shot[i].y < -10 || shot[i].x < -10 || shot[i].x>410) {
 				shot[i].flag = false;
 			}
 		}
 	}
 
-
 }
+
 
 void PLAYER::GetPosition(double* x, double* y)
 {
@@ -273,6 +316,18 @@ int PLAYER::GetLife()
 	return life;
 }
 
+void PLAYER::SetPower(int p)
+{
+	power += p;
+	if (power > 10) {
+		power = 10;
+	}
+}
+
+int PLAYER::GetPower()
+{
+	return power;
+}
 
 
 

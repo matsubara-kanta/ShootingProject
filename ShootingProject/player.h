@@ -36,6 +36,8 @@ private:
 
 	EFFECT_PDEAD effect_pdead;
 
+	int power;
+
 
 
 private:
@@ -53,6 +55,8 @@ public:
 	void SetDamageFlag();
 	bool GetDamageFlag();
 	int GetLife();
+	void SetPower(int p);
+	int  GetPower();
 	void All();
 
 };

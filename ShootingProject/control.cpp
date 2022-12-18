@@ -376,8 +376,11 @@ void CONTROL::CollisionAll()
 						score->SetScore(CURRENT_SCORE, 300);
 						break;
 					case 1:
-						score->SetScore(POWER_SCORE, 1);
+						player->SetPower(1);
+						score->SetScore(POWER_SCORE, player->GetPower());
+						//パワーを増やす
 						break;
+
 					}
 					item[i]->Delete();
 					//アイテム取得音をセット
