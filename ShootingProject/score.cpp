@@ -1,7 +1,7 @@
 #include "score.h"
 #include"pch.h"
 
-#include<stdio.h>
+
 
 SCORE::SCORE()
 {

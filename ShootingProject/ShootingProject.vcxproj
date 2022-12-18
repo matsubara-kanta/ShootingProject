@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ball.h" />
     <ClInclude Include="effect_edead.h" />
     <ClInclude Include="effect_pdead.h" />
     <ClInclude Include="enemy.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="score.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ball.cpp" />
     <ClCompile Include="effect_edead.cpp" />
     <ClCompile Include="effect_pdead.cpp" />
     <ClCompile Include="graze.cpp" />

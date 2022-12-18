@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "control.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
 CONTROL::CONTROL()
 {
 	player = new PLAYER;
@@ -111,25 +107,12 @@ CONTROL::CONTROL()
 }
 
 
-
-
 void CONTROL::GetPlayerPosition(double* x, double* y)
 {
 	double tempx, tempy;
 
 	player->GetPosition(&tempx, &tempy);
 
-	*x = tempx;
-	*y = tempy;
-}
-
-void CONTROL::GetEnemyPosition(int index, double* x, double* y)
-{
-	double tempx, tempy;
-	//Žw’è‚µ‚½“YŽš‚Ì“G‚ÌÀ•W‚ðŽæ“¾
-	enemy[index]->GetPosition(&tempx, &tempy);
-
-	//‘ã“ü
 	*x = tempx;
 	*y = tempy;
 }
@@ -434,6 +417,26 @@ CONTROL::~CONTROL()
 		delete item[i];
 	}
 }
+
+bool CONTROL::GetEnemyPosition(int index, double* x, double* y)
+{
+	double tempx, tempy;
+
+	if (enemy[index] == NULL || enemy[index]->GetDeadFlag())
+		return false;
+
+
+	//Žw’è‚µ‚½“YŽš‚Ì“G‚ÌÀ•W‚ðŽæ“¾
+	enemy[index]->GetPosition(&tempx, &tempy);
+
+	//‘ã“ü
+	*x = tempx;
+	*y = tempy;
+
+	return true;
+
+}
+
 
 void CONTROL::Enemy_Init() {
 	srand(time(NULL));

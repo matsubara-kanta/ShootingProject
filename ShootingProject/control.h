@@ -63,7 +63,7 @@ public:
 	~CONTROL();
 	void All();
 	void GetPlayerPosition(double* x, double* y);
-	void GetEnemyPosition(int index, double* x, double* y);
+	bool GetEnemyPosition(int index, double* x, double* y);
 	static CONTROL& GetInstance() {
 		static CONTROL control;
 		return control;

@@ -6,3 +6,7 @@
 //DXƒ‰ƒCƒuƒ‰ƒŠ‚Ædefine.h‚Ìæ‚è‚İ
 #include "DxLib.h"
 #include "define.h"
+#include <math.h>
+#include <time.h>
+#include<stdio.h>
+#include <stdlib.h>

@@ -214,7 +214,7 @@ void PLAYER::Shot()
 						break;
 
 					}
-					else if (power >= 5) {
+					else if (power >= 5 && power < 10) {
 						//0‚Ì‚ª‘O•û”­Ë
 						if (num == 0) {
 							shot[i].flag = true;
@@ -242,6 +242,39 @@ void PLAYER::Shot()
 							break;
 						}
 					}
+					else if (power == 10) {
+						//0‚Ì‚ª‘O•û”­Ë
+						if (num == 0) {
+							shot[i].flag = true;
+							shot[i].x = x;
+							shot[i].y = y;
+							shot[i].rad = -1.57;
+							shot[i].type = 0;
+						}
+						else if (num == 1) {
+							shot[i].flag = true;
+							shot[i].x = x;
+							shot[i].y = y;
+							shot[i].rad = -1.69;
+							shot[i].type = 0;
+						}
+						else if (num == 2) {
+							shot[i].flag = true;
+							shot[i].x = x;
+							shot[i].y = y;
+							shot[i].rad = -1.45;
+							shot[i].type = 0;
+						}
+						else if (num > 2) {
+							BallShotSet(i);
+						}
+						++num;
+
+
+						if (num == 5) {
+							break;
+						}
+					}
 				}
 
 			}
@@ -250,12 +283,42 @@ void PLAYER::Shot()
 		}
 	}
 
+	//ˆê”Ô‹ß‚¢“G‚Æ‚ÌŠp“x
+	double trad;
+	//ˆê”Ô‹ß‚¢“G‚Ì“Y‚¦š
+	int index;
+	double ex, ey;
+	//controlƒNƒ‰ƒX‚ÌQÆ•Ï”
+	CONTROL& control = CONTROL::GetInstance();
+
+	//ˆê”Ô‹ß‚¢“G‚Ì“Y‚¦šæ“¾
+	index = NearEnemySearch();
+
+
 	//’e‚ğˆÚ“®‚³‚¹‚éˆ—
 	for (int i = 0; i < PSHOT_NUM; ++i) {
 		//”­Ë‚µ‚Ä‚é’e‚¾‚¯
 		if (shot[i].flag) {
-			shot[i].x += cos(shot[i].rad) * PSHOT_SPEED;
-			shot[i].y += sin(shot[i].rad) * PSHOT_SPEED;
+			if (shot[i].type == 0) {
+				shot[i].x += cos(shot[i].rad) * PSHOT_SPEED;
+				shot[i].y += sin(shot[i].rad) * PSHOT_SPEED;
+			}
+			else if (shot[i].type == 1) {
+
+				//–ß‚è’l‚ª-1‚È‚ç“G‚Í‚à‚¤‹‚È‚¢‚Ì‚ÅA‚Ü‚Á‚·‚®‘O‚É”­Ë
+				if (index == -1) {
+					trad = -PI / 2;
+				}
+				else {
+					//ˆê”Ô‹ß‚¢“G‚Æ‚ÌŠp“x‚ğæ“¾
+					control.GetEnemyPosition(index, &ex, &ey);
+					trad = atan2(ey - shot[i].y, ex - shot[i].x);
+				}
+
+				shot[i].rad = trad;
+				shot[i].x += cos(trad) * PSHOT_SPEED;
+				shot[i].y += sin(trad) * PSHOT_SPEED;
+			}
 
 			//‰æ–Ê‚ÌŠO‚É‚Í‚İo‚µ‚½‚çƒtƒ‰ƒO‚ğ–ß‚·
 			if (shot[i].y < -10 || shot[i].x < -10 || shot[i].x>410) {
@@ -329,6 +392,81 @@ int PLAYER::GetPower()
 	return power;
 }
 
+void PLAYER::Ball()
+{
+	if (power == 10) {
+		ball.All(x, y);
+	}
+}
+
+int PLAYER::NearEnemySearch()
+{
+
+	CONTROL& control = CONTROL::GetInstance();
+	int nearindex = -1;
+	double nearresult = 0;
+	double ex, ey, tx, ty;
+
+	for (int i = 0; i < ENEMY_NUM; ++i) {
+		if (!control.GetEnemyPosition(i, &ex, &ey))
+			continue;
+		tx = ex - x;
+		ty = ey - y;
+
+		if (nearindex == -1) {
+			nearindex = i;
+			nearresult = tx * tx + ty * ty;
+			continue;
+		}
+		//”äŠr‚µ‚Ä¬‚³‚¯‚ê‚Î‚»‚ê‚ğÅ¬’l‚Æ‚·‚é
+		if (nearresult > tx * tx + ty * ty) {
+			nearindex = i;
+			nearresult = tx * tx + ty * ty;
+		}
+	}
+	return nearindex;
+}
+
+void PLAYER::BallShotSet(int index)
+{
+	double ty;
+	double trad, ex, ey;
+	static  int toggle = 1;
+	int tindex;
+
+	CONTROL& control = CONTROL::GetInstance();
+
+
+	ty = ball.GetPosition();
+
+
+	tindex = NearEnemySearch();
+	//–ß‚è’l‚ª-1‚È‚ç“G‚Í‚à‚¤‹‚È‚¢‚Ì‚ÅA‚Ü‚Á‚·‚®‘O‚É”­Ë
+	if (tindex == -1) {
+		trad = -PI / 2;
+	}
+	else {
+		//ˆê”Ô‹ß‚¢“G‚Æ’e‚Æ‚ÌŠp“x‚ğæ“¾
+		control.GetEnemyPosition(tindex, &ex, &ey);
+		trad = atan2(ey - ty + BALL_INITY, ex - x + (toggle * BALL_INITX));
+	}
+
+	shot[index].flag = true;
+	shot[index].x = x + BALL_INITX * toggle;
+	shot[index].y = ty + BALL_INITY;
+	shot[index].rad = trad;
+	shot[index].type = 1;
+
+
+
+	if (toggle == 1) {
+		toggle = -1;
+	}
+	else {
+		toggle = 1;
+	}
+}
+
 
 
 void PLAYER::All()
@@ -340,6 +478,7 @@ void PLAYER::All()
 
 	Shot();
 	effect_pdead.All();
+	Ball();
 
 	Draw();
 

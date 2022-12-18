@@ -1,5 +1,7 @@
 #pragma once
 #include "effect_pdead.h"
+#include "ball.h"
+
 
 class PLAYER {
 private:
@@ -38,12 +40,20 @@ private:
 
 	int power;
 
+	BALL ball;
+
+
+
 
 
 private:
 	void Move();
 	void Draw();
 	void Shot();
+	void Ball();
+	void BallShotSet(int index);
+	int NearEnemySearch();
+
 
 
 public:
