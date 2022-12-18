@@ -150,6 +150,7 @@ void SCORE::Draw()
 	for (int i = 0; i < num; ++i) {
 		DrawGraph(SCORE_X + 100 + i * 19, 265, g_number[(buf[i] - '0')], TRUE);
 	}
+
 }
 
 void SCORE::All()

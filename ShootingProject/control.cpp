@@ -96,6 +96,7 @@ CONTROL::CONTROL()
 	s_pdead = LoadSoundMem("SE/pdead.mp3");
 	s_graze = LoadSoundMem("SE/graze.mp3");
 	s_item = LoadSoundMem("SE/itemget1.mp3");
+	s_bshot = s_eshot;
 
 	eshot_flag = false;
 	pshot_flag = false;
@@ -103,6 +104,11 @@ CONTROL::CONTROL()
 	pdead_flag = false;
 	graze_flag = false;
 	item_flag = false;
+	bshot_flag = false;
+
+	clock_t start = clock();
+
+	boss_count = 0;
 
 }
 
@@ -121,7 +127,7 @@ void CONTROL::GetPlayerPosition(double* x, double* y)
 
 void CONTROL::All()
 {
-	eshot_flag = pshot_flag = edead_flag = pdead_flag = graze_flag = item_flag = false;
+	eshot_flag = pshot_flag = edead_flag = pdead_flag = graze_flag = item_flag = bshot_flag = false;
 
 	SetDrawArea(MARGIN, MARGIN, MARGIN + 380, MARGIN + 460);
 
@@ -132,23 +138,35 @@ void CONTROL::All()
 		pshot_flag = true;
 	}
 
+	if (!boss.GetFlag()) {
+		for (int i = 0; i < ENEMY_NUM; ++i) {
+			if (enemy[i] != NULL) {
+				//敵ショットサウンドフラグチェック
+				if (enemy[i]->GetShotSound()) {
+					eshot_flag = true;
+				}
 
-	for (int i = 0; i < ENEMY_NUM; ++i) {
-		if (enemy[i] != NULL) {
-			//敵ショットサウンドフラグチェック
-			if (enemy[i]->GetShotSound()) {
-				eshot_flag = true;
-			}
-
-			if (enemy[i]->All()) {
-				delete enemy[i];
-				enemy[i] = NULL;
-				score->SetScore(TOTAL_E_NUM, 1);
+				if (enemy[i]->All()) {
+					delete enemy[i];
+					enemy[i] = NULL;
+					score->SetScore(TOTAL_E_NUM, 1);
+					boss_count++;
+					if (boss_count == 50) {
+						boss.SetFlag(true);
+					}
+				}
 			}
 		}
+		EnemyCollisionAll();
+	}
+	else {
+		boss.All();
+		if (boss.GetShotSound()) {
+			bshot_flag = true;
+		}
+		BossCollisionAll();
 	}
 
-	CollisionAll();
 
 	//グレイズ描画
 	for (int i = 0; i < GRAZE_NUM; ++i) {
@@ -209,6 +227,15 @@ void CONTROL::SoundAll()
 		PlaySoundMem(s_item, DX_PLAYTYPE_BACK);
 	}
 
+	if (bshot_flag) {
+		clock_t end = clock();
+
+		if (300 < end - start) {
+			PlaySoundMem(s_bshot, DX_PLAYTYPE_BACK);
+			start = end;
+		}
+	}
+
 
 }
 
@@ -227,7 +254,7 @@ bool CONTROL::CircleCollision(double c1, double c2, double cx1, double cx2, doub
 	}
 }
 
-void CONTROL::CollisionAll()
+void CONTROL::EnemyCollisionAll()
 {
 	double px, py, ex, ey;
 
@@ -378,6 +405,177 @@ void CONTROL::CollisionAll()
 
 }
 
+void CONTROL::BossCollisionAll()
+{
+
+	double px = 0;
+	double py = 0;
+	double bx = 0;
+	double by = 0;
+	double ix = 0;
+	double iy = 0;
+
+	int bhp = 0;
+
+	int itemnum = 0;
+
+	bool hflag = false, gflag = false;
+
+	int type;
+
+	if (!boss.GetNodamageFlag()) {
+		for (int i = 0; i < PSHOT_NUM; ++i) {
+			if (player->GetShotPosition(i, &px, &py)) {
+ 				boss.GetPosition(&bx, &by);
+				if (CircleCollision(PSHOT_COLLISION, BOSS_COLLISION, px, bx, py, by)) {
+   					bhp = boss.HpSet(1);
+					player->SetShotFlag(i, false);
+					score->SetScore(CURRENT_SCORE, 10);
+
+					char buf[100];
+					sprintf(buf, "%d", bhp);
+					SetMainWindowText(buf);
+
+
+					if (BOSS_HP * 2 / 3 >= bhp && boss.GetPrevHp() > BOSS_HP * 2 / 3) {
+						EnemyDeadEffect(bx, by);
+						edead_flag = true;
+						score->SetScore(CURRENT_SCORE, 1000);
+						for (int z = 0; z < ITEM_NUM; ++z) {
+							if (!item[z]->GetFlag()) {
+								ix = (rand() % 100 - 51) + bx;
+								iy = (rand() % 100 - 51) + by;
+								item[z]->SetFlag(ix, iy, rand() % 2);
+								++itemnum;
+								if (itemnum == 5) {
+									break;
+								}
+							}
+						}
+						boss.SetDamageSetting();
+					}
+					else if (BOSS_HP / 3 >= bhp && boss.GetPrevHp() > BOSS_HP / 3) {
+						EnemyDeadEffect(bx, by);
+						edead_flag = true;
+						score->SetScore(CURRENT_SCORE, 1000);
+						for (int z = 0; z < ITEM_NUM; ++z) {
+							if (!item[z]->GetFlag()) {
+								ix = (rand() % 100 - 51) + bx;
+								iy = (rand() % 100 - 51) + by;
+								item[z]->SetFlag(ix, iy, rand() % 2);
+								++itemnum;
+								if (itemnum == 5) {
+									break;
+								}
+							}
+						}
+						boss.SetDamageSetting();
+					}
+					else if (bhp <= 0) {
+						boss.SetFlag(false);
+						EnemyDeadEffect(bx, by);
+						edead_flag = true;
+						score->SetScore(CURRENT_SCORE, 10000);
+						for (int z = 0; z < ITEM_NUM; ++z) {
+							if (!item[z]->GetFlag()) {
+								ix = (rand() % 100 - 51) + bx;
+								iy = (rand() % 100 - 51) + by;
+								item[z]->SetFlag(ix, iy, rand() % 2);
+								++itemnum;
+								if (itemnum == 10) {
+									break;
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+	}
+
+	if (!player->GetDamageFlag()) {
+		player->GetPosition(&px, &py);
+		for (int i = 0; i < BOSS_SHOTNUM; ++i) {
+			if (boss.GetShotPosition(i, &bx, &by, &type)) {
+				switch (type) {
+				case 0:
+					if (CircleCollision(GRAZE_COLLISION, ESHOT0_COLLISION, px, bx, py, by)) {
+						gflag = true;
+					}
+					if (CircleCollision(PLAYER_COLLISION, ESHOT0_COLLISION, px, bx, py, by)) {
+						hflag = true;
+					}
+					break;
+
+				case 1:
+					if (CircleCollision(GRAZE_COLLISION, ESHOT1_COLLISION, px, bx, py, by)) {
+						gflag = true;
+					}
+					if (CircleCollision(PLAYER_COLLISION, ESHOT1_COLLISION, px, bx, py, by)) {
+						hflag = true;
+					}
+					break;
+
+				case 2:
+					if (CircleCollision(GRAZE_COLLISION, ESHOT2_COLLISION, px, bx, py, by)) {
+						gflag = true;
+					}
+					if (CircleCollision(PLAYER_COLLISION, ESHOT2_COLLISION, px, bx, py, by)) {
+						hflag = true;
+					}
+					break;
+				}
+				if (gflag) {
+					if (!boss.GetGrazeFlag(i)) {
+						boss.SetGrazeFlag(i);
+						for (int z = 0; z < GRAZE_NUM; ++z) {
+							if (!graze[z]->GetFlag()) {
+								graze[z]->SetFlag(px, py);
+								break;
+
+							}
+						}
+						score->SetScore(GRAZE_SCORE, 1);
+						score->SetScore(CURRENT_SCORE, 20);
+						graze_flag = true;
+
+
+					}
+					gflag = false;
+				}
+				if (hflag) {
+					player->SetDamageFlag();
+					boss.SetShotFlag(i, false);
+					pdead_flag = true;
+					hflag = false;
+					break;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < ITEM_NUM; ++i) {
+		if (item[i]->GetFlag()) {
+			item[i]->GetPosition(&ix, &iy);
+			if (CircleCollision(PLAYER_COLLISION, ITEM_COLLISION, px, ix, py, iy)) {
+				switch (item[i]->GetType()) {
+				case 0:
+					score->SetScore(CURRENT_SCORE, 300);
+					break;
+				case 1:
+					player->SetPower(1);
+					score->SetScore(POWER_SCORE, player->GetPower());
+					break;
+				}
+				item[i]->Delete();
+				item_flag = true;
+			}
+		}
+	}
+	score->SetScore(LIFE_SCORE, player->GetLife());
+}
+
 void CONTROL::EnemyDeadEffect(double x, double y)
 {
 	//エフェクトセット
@@ -435,6 +633,16 @@ bool CONTROL::GetEnemyPosition(int index, double* x, double* y)
 
 	return true;
 
+}
+
+void CONTROL::GetBossPosition(double* x, double* y)
+{
+	double bx, by;
+
+	boss.GetPosition(&bx, &by);
+
+	*x = bx;
+	*y = by;
 }
 
 

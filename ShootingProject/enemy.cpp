@@ -64,6 +64,7 @@ ENEMY::ENEMY(int type, int stype, int m_pattern, int s_pattern, int in_time, int
 		shot[i].x = x;
 		shot[i].y = y;
 		shot[i].flag = false;
+		shot[i].type = 0;
 	}
 
 

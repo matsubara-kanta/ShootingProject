@@ -42,12 +42,17 @@
 //アイテムの総数
 #define ITEM_NUM 30
 
-#define PLAYER_PINIT 8
+#define PLAYER_PINIT 0
 
 #define BALL_SHAKE 15
 
 #define BALL_INITX 50
 #define BALL_INITY 30
+
+#define BOSS_COLLISION 60
+#define BOSS_SHOTNUM 100
+#define BOSS_SHAKE 20
+#define BOSS_HP 500
 
 struct SHOT {
 	bool flag; // 弾が発射中かどうか
@@ -69,6 +74,7 @@ struct E_SHOT {
 	int pattern;
 	int speed;
 	bool gflag;//グレイズ判定用フラグ
+	int type;
 };
 
 struct ENEMYDATA {

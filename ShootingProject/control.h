@@ -7,6 +7,7 @@
 #include"graze.h"
 #include "score.h"
 #include "item.h"
+#include "boss.h"
 
 
 #include <time.h>
@@ -31,6 +32,8 @@ class CONTROL {
 
 	ITEM* item[ITEM_NUM];
 
+	BOSS boss;
+
 
 	//サウンドハンドル
 	int s_eshot;
@@ -39,6 +42,7 @@ class CONTROL {
 	int s_pdead;
 	int s_graze;
 	int s_item;
+	int s_bshot;
 
 	//サウンドを鳴らすかどうかのフラグ
 	bool eshot_flag;
@@ -47,16 +51,23 @@ class CONTROL {
 	bool pdead_flag;
 	bool graze_flag;
 	bool item_flag;
+	bool bshot_flag;
+
+	clock_t start;
+
+	int boss_count;
+
 
 	
 
 
 private:
 	void SoundAll();
-	void CollisionAll();
+	void EnemyCollisionAll();
 	bool CircleCollision(double c1, double c2, double cx1, double cx2, double cy1, double cy2);
 	void EnemyDeadEffect(double x, double y);
 	void Enemy_Init();
+	void BossCollisionAll();
 
 public:
 	CONTROL();
@@ -68,6 +79,7 @@ public:
 		static CONTROL control;
 		return control;
 	}
+	void GetBossPosition(double* x, double* y);
 
 };
 
