@@ -13,5 +13,5 @@
 - グレイズ(弾がキャラをかすめる)で得点がアップ
 - 敵が50体出現した後にボスが出現
 - ボスはHPによって行動パターンと攻撃パターンが変化
-## 実際のプレイ画像
-# ShootingProject![ezgif-5-591b010bb0](https://user-images.githubusercontent.com/45473854/208450666-5817e520-c017-4bd6-941f-a69272be2b37.gif)
+## 実際のプレイ動画
+# ![ShootingProject](https://user-images.githubusercontent.com/45473854/208450666-5817e520-c017-4bd6-941f-a69272be2b37.gif)
